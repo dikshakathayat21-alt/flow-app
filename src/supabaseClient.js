@@ -6,3 +6,11 @@ const SUPABASE_PUBLIC_KEY = "sb_publishable_m1pamA7AuihLXv-dT-00WQ_tPzF4KZ8";
 
 // Create and export the Supabase client
 export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
+
+export const signInWithGoogle = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+  });
+  if (error) throw error;
+  return data;
+};

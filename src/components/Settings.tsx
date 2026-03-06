@@ -7,12 +7,13 @@ interface SettingsProps {
   notes: Note[];
   todos: Todo[];
   onClearData: () => void;
+  email?: string;
 }
 
-export default function Settings({ notes, todos, onClearData }: SettingsProps) {
+export default function Settings({ notes, todos, onClearData, email }: SettingsProps) {
   const exportToExcel = () => {
     const wb = XLSX.utils.book_new();
-    
+
     // Notes Sheet
     const notesData = notes.map(n => ({
       title: n.title,
@@ -50,16 +51,8 @@ export default function Settings({ notes, todos, onClearData }: SettingsProps) {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm font-bold">email address</p>
-              <p className="text-xs opacity-50">user@example.com</p>
+              <p className="text-xs opacity-50">{email || 'searching...'}</p>
             </div>
-            <button className="text-xs underline">change</button>
-          </div>
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm font-bold">password</p>
-              <p className="text-xs opacity-50">••••••••••••</p>
-            </div>
-            <button className="text-xs underline">update</button>
           </div>
         </div>
       </section>
@@ -73,7 +66,7 @@ export default function Settings({ notes, todos, onClearData }: SettingsProps) {
           <div className="space-y-2">
             <p className="text-sm font-bold">export your data</p>
             <p className="text-xs opacity-50 mb-4">download all your notes and tasks in an excel format for backup or external use.</p>
-            <button 
+            <button
               onClick={exportToExcel}
               className="minimal-button flex items-center gap-2 text-sm"
             >
@@ -84,7 +77,7 @@ export default function Settings({ notes, todos, onClearData }: SettingsProps) {
           <div className="space-y-2">
             <p className="text-sm font-bold text-red-500">danger zone</p>
             <p className="text-xs opacity-50 mb-4">permanently delete all your data from flow. this action cannot be undone.</p>
-            <button 
+            <button
               onClick={() => {
                 if (confirm('are you sure you want to delete all your data? this cannot be undone.')) {
                   onClearData();

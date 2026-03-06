@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { supabase } from '../supabaseClient';
+import { supabase, signInWithGoogle } from '../supabaseClient';
 
 interface AuthProps {
   onLogin: () => void;
@@ -36,7 +36,7 @@ export default function Auth({ onLogin }: AuthProps) {
           password,
         });
         if (signUpError) throw signUpError;
-        
+
         if (!data.session) {
           setSuccessMessage('your account has been created. please check your email and verify your address before logging in.');
           setIsLogin(true);
@@ -54,10 +54,7 @@ export default function Auth({ onLogin }: AuthProps) {
 
   const handleGoogleLogin = async () => {
     try {
-      const { error: googleError } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-      });
-      if (googleError) throw googleError;
+      await signInWithGoogle();
     } catch (err: any) {
       setError(err.message);
     }
@@ -65,7 +62,7 @@ export default function Auth({ onLogin }: AuthProps) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm space-y-8"
@@ -77,17 +74,17 @@ export default function Auth({ onLogin }: AuthProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-4">
-            <input 
-              type="email" 
-              placeholder="email" 
+            <input
+              type="email"
+              placeholder="email"
               className="minimal-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <input 
-              type="password" 
-              placeholder="password" 
+            <input
+              type="password"
+              placeholder="password"
               className="minimal-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -105,8 +102,8 @@ export default function Auth({ onLogin }: AuthProps) {
             <p className="text-xs text-red-500 text-center">{error.toLowerCase()}</p>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full minimal-button disabled:opacity-50"
             disabled={loading}
           >
@@ -123,7 +120,7 @@ export default function Auth({ onLogin }: AuthProps) {
           </div>
         </div>
 
-        <button 
+        <button
           onClick={handleGoogleLogin}
           className="w-full minimal-button flex items-center justify-center gap-2"
         >
@@ -138,7 +135,7 @@ export default function Auth({ onLogin }: AuthProps) {
 
         <p className="text-center text-xs">
           {isLogin ? "don't have an account? " : "already have an account? "}
-          <button 
+          <button
             onClick={() => {
               setIsLogin(!isLogin);
               setError(null);
