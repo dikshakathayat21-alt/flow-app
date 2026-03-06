@@ -9,13 +9,15 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Install npm dependencies
+      - name: Install dependencies
         run: npm install
 
       - name: Build web app
@@ -24,7 +26,7 @@ jobs:
       - name: Install Capacitor
         run: npm install @capacitor/core @capacitor/cli @capacitor/ios
 
-      - name: Sync Capacitor
+      - name: Sync iOS platform
         run: npx cap sync ios
 
       - name: Install CocoaPods
@@ -32,23 +34,25 @@ jobs:
           cd ios/App
           pod install
 
-      - name: Build iOS IPA
+      - name: Archive iOS App
         run: |
           cd ios/App
-          xcodebuild \
+          xcodebuild archive \
             -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
-            -sdk iphoneos \
-            -destination 'generic/platform=iOS' \
-            -archivePath $PWD/build/App.xcarchive archive
+            -archivePath App.xcarchive
 
+      - name: Export .ipa
+        run: |
+          cd ios/App
           xcodebuild -exportArchive \
-            -archivePath $PWD/build/App.xcarchive \
-            -exportOptionsPlist $PWD/ExportOptions.plist \
-            -exportPath $PWD/build
+            -archivePath App.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath ./build
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload .ipa artifact
+        uses: actions/upload-artifact@v4
         with:
           name: ios-ipa
           path: ios/App/build/*.ipa
