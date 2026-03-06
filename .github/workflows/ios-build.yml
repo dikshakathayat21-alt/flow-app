@@ -9,9 +9,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
@@ -32,9 +34,9 @@ jobs:
           cd ios
           pod install
 
-      - name: Build iOS
+      - name: Build iOS App
         run: |
-          cd ios/App
+          cd ios
           xcodebuild \
           -workspace App.xcworkspace \
           -scheme App \
