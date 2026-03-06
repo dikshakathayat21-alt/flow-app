@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-black selection:bg-black selection:text-white;
+    font-family: var(--font-sans);
+    text-transform: lowercase;
+  }
+
+  input, textarea, button {
+    @apply focus:outline-none;
+    text-transform: lowercase;
+  }
+
+  /* Ensure placeholders are also lowercase */
+  ::placeholder {
+    text-transform: lowercase;
+  }
+}
+
+.minimal-border {
+  @apply border border-black;
+}
+
+.minimal-button {
+  @apply px-4 py-2 border border-black hover:bg-black hover:text-white transition-colors duration-200;
+}
+
+.minimal-input {
+  @apply w-full px-4 py-2 border border-black bg-transparent;
+}
