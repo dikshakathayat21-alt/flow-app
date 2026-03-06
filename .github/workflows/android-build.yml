@@ -15,6 +15,13 @@ jobs:
         with:
           node-version: 22
 
+      # ✅ ADD THIS BLOCK
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
       - name: Clean install dependencies
         run: |
           rm -rf node_modules
