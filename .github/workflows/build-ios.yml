@@ -16,17 +16,13 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: |
-          npm install
+        run: npm install
 
       - name: Build web app
         run: npm run build
 
       - name: Install Capacitor
         run: npm install @capacitor/core @capacitor/cli @capacitor/ios
-
-      - name: Add iOS platform
-        run: npx cap add ios
 
       - name: Sync Capacitor
         run: npx cap sync ios
