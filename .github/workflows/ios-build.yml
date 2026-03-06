@@ -2,29 +2,26 @@ name: Build iOS App
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build-ios:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: npm install
 
       - name: Build web app
         run: npm run build
 
-      - name: Install Capacitor iOS
+      - name: Install Capacitor
         run: npm install @capacitor/core @capacitor/cli @capacitor/ios
 
       - name: Sync Capacitor
@@ -35,12 +32,23 @@ jobs:
           cd ios/App
           pod install
 
-      - name: Build iOS
+      - name: Build iOS IPA
         run: |
           cd ios/App
           xcodebuild \
-          -workspace App.xcworkspace \
-          -scheme App \
-          -configuration Release \
-          -sdk iphonesimulator \
-          -destination 'platform=iOS Simulator,name=iPhone 15'
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath $PWD/build/App.xcarchive archive
+
+          xcodebuild -exportArchive \
+            -archivePath $PWD/build/App.xcarchive \
+            -exportOptionsPlist $PWD/ExportOptions.plist \
+            -exportPath $PWD/build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: ios/App/build/*.ipa
